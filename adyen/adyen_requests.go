@@ -6,8 +6,10 @@ import (
 )
 
 const (
-	apiURL                      = "https://checkout-test.adyen.com/v40"
-	PaymentSessionEndpoint      = apiURL + "/paymentSession"
+	apiURL = "https://checkout-test.adyen.com/v40"
+	// https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v40/paymentSession
+	PaymentSessionEndpoint = apiURL + "/paymentSession"
+	// https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v40/payments/result
 	PaymentVerificationEndpoint = apiURL + "/payments/result"
 )
 
@@ -37,14 +39,14 @@ func NewPaymentSessionRequest(merchantAccount string) *PaymentSessionRequest {
 		merchantAccount,
 		"1.6.4",
 		"Web",
-		PaymentAmount{"EUR", 100},
+		PaymentAmount{"JPY", 100},
 		fmt.Sprintf("randomId123354asdfasdf%d", time.Now().Unix()),
-		"NL",
-		"nl_NL",
+		"JP",
+		"ja_JP",
 		fmt.Sprintf("1234565asdfsadf789%d", time.Now().Unix()),
 		"http://localhost:8080",
-		"http://localhost:8080/completed",
-		//true,
+		"http://localhost:8080/result",
+		// true,
 		true,
 		true,
 	}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
 
 	"github.com/Jimeux/addy/adyen"
@@ -51,6 +52,11 @@ func handleVerifyPaymentResult(c *gin.Context) {
 	}
 	defer resp.Body.Close()
 
+	r, err := httputil.DumpResponse(resp, true)
+	fmt.Println()
+	fmt.Println(string(r))
+	fmt.Println()
+
 	decoder := json.NewDecoder(resp.Body)
 	resBody := make(map[string]interface{})
 	err = decoder.Decode(&resBody)
@@ -60,8 +66,6 @@ func handleVerifyPaymentResult(c *gin.Context) {
 	if resp.StatusCode >= 400 {
 		log.Fatal(resBody)
 	}
-
-	fmt.Println("verifyResponse", resBody)
 
 	c.String(200, "Success")
 }
@@ -76,6 +80,11 @@ func handlePaymentSessionRequest(c *gin.Context) {
 	req, err := http.NewRequest(http.MethodPost, adyen.PaymentSessionEndpoint, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-API-Key", apiKey)
+
+	r, err := httputil.DumpRequest(req, true)
+	fmt.Println()
+	fmt.Println(string(r))
+	fmt.Println()
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -93,7 +102,7 @@ func handlePaymentSessionRequest(c *gin.Context) {
 		log.Fatal(resBody)
 	}
 
-	fmt.Println("sessionResponse: ", resBody)
+	// fmt.Println("sessionResponse: ", resBody)
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"session": resBody["paymentSession"],
