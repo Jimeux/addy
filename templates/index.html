@@ -15,18 +15,26 @@
 <input id="session" type="hidden" value="{{ .session }}"/>
 
 <div>
+  <strong>Visa</strong><br>
   4988 4388 4388 4305 <br>
   10/20 <br>
   737
 </div>
-
+<br>
+<div>
+  <strong>3D MasterCard</strong><br>
+  5212 3456 7890 1234<br>
+  10/20 <br>
+  737
+</div>
+<br><br>
 <!--ペイメントフォームをここに入れる-->
 <div id="form-container"></div>
 
 <script type="text/javascript">
   const configurationObject = {
     autoFocusOnLoad: true,
-    consolidateCards: false,
+    consolidateCards: true,
     context: 'test',
     initialPMCount: 5, // Overwrites the initial amount of payment methods shown
     //translations: translationObject,
@@ -47,9 +55,8 @@
     const session = $("#session").val()
     // init
     chckt.checkout(session, '#form-container', configurationObject)
-
+    // フォームのサブミットのリクエストが返ってくる時に呼び出される
     chckt.hooks.beforeComplete = (node, paymentData) => {
-      console.log(Object.keys(paymentData))
       console.log(paymentData.payload)
 
       const payloadObject = {
