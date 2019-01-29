@@ -1,7 +1,14 @@
 package adyen
 
+import (
+	"fmt"
+	"time"
+)
+
 const (
-	PaymentSessionEndpoint = "https://checkout-test.adyen.com/v40/paymentSession"
+	apiURL                      = "https://checkout-test.adyen.com/v40"
+	PaymentSessionEndpoint      = apiURL + "/paymentSession"
+	PaymentVerificationEndpoint = apiURL + "/payments/result"
 )
 
 type PaymentAmount struct {
@@ -20,6 +27,9 @@ type PaymentSessionRequest struct {
 	ShopperReference string        `json:"shopperReference"` // ユーザIDなど,
 	Origin           string        `json:"origin"`           // http://localhost:8080,
 	ReturnUrl        string        `json:"returnUrl"`        // http://localhost:8080/completed
+	// Html             bool          `json:"html"`
+	EnableRecurring bool `json:"enableRecurring"`
+	EnableOneClick  bool `json:"enableOneClick"`
 }
 
 func NewPaymentSessionRequest(merchantAccount string) *PaymentSessionRequest {
@@ -27,12 +37,19 @@ func NewPaymentSessionRequest(merchantAccount string) *PaymentSessionRequest {
 		merchantAccount,
 		"1.6.4",
 		"Web",
-		PaymentAmount{"EUR", 10},
-		"randomId",
+		PaymentAmount{"EUR", 100},
+		fmt.Sprintf("randomId123354asdfasdf%d", time.Now().Unix()),
 		"NL",
 		"nl_NL",
-		"123456578",
+		fmt.Sprintf("1234565asdfsadf789%d", time.Now().Unix()),
 		"http://localhost:8080",
 		"http://localhost:8080/completed",
+		//true,
+		true,
+		true,
 	}
+}
+
+type PaymentResultPayload struct {
+	Payload string `form:"payload" json:"payload"`
 }

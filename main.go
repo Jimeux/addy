@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/Jimeux/addy/adyen"
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/Jimeux/addy/adyen"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -19,9 +21,49 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
-	router.GET("/", handlePaymentSessionRequest)
+	router.GET("/test", handlePaymentSessionRequest)
+	router.POST("/result", handleVerifyPaymentResult)
+	router.GET("/result", handleVerifyPaymentResult)
 
 	router.Run()
+}
+
+func handleVerifyPaymentResult(c *gin.Context) {
+	var payload adyen.PaymentResultPayload
+	if err := c.Bind(&payload); err != nil {
+		log.Fatal(err)
+	}
+
+	// fmt.Println("payload", payload)
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	req, err := http.NewRequest(http.MethodPost, adyen.PaymentVerificationEndpoint, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-API-Key", apiKey)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	decoder := json.NewDecoder(resp.Body)
+	resBody := make(map[string]interface{})
+	err = decoder.Decode(&resBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resp.StatusCode >= 400 {
+		log.Fatal(resBody)
+	}
+
+	fmt.Println("verifyResponse", resBody)
+
+	c.String(200, "Success")
 }
 
 func handlePaymentSessionRequest(c *gin.Context) {
@@ -50,6 +92,8 @@ func handlePaymentSessionRequest(c *gin.Context) {
 	if resp.StatusCode >= 400 {
 		log.Fatal(resBody)
 	}
+
+	fmt.Println("sessionResponse: ", resBody)
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"session": resBody["paymentSession"],

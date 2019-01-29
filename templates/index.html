@@ -14,6 +14,10 @@
 <!--paymentSessionの値をここに入れる-->
 <input id="session" type="hidden" value="{{ .session }}"/>
 
+<div>
+  4988 4388 4388 4305
+</div>
+
 <!--ペイメントフォームをここに入れる-->
 <div id="form-container"></div>
 
@@ -39,28 +43,29 @@
 
   $(document).ready(() => {
     const session = $("#session").val()
-    const checkout = chckt.checkout(session, '#form-container', configurationObject)
+    // init
+    chckt.checkout(session, '#form-container', configurationObject)
 
     chckt.hooks.beforeComplete = (node, paymentData) => {
-      console.log(paymentData.payload);
+      console.log(paymentData.payload)
+
       const payloadObject = {
         payload: paymentData.payload
       }
+
       $.ajax({
         url: '/result',
         data: payloadObject,
         method: 'POST',
-        success: (data) => {
-          $("#checkout").html(data.resultCode);
-        },
+        /*success: (data) => {
+          $("#form-container").html("SUCCESS 🤩👍!!!!!!")
+        },*/
         error: () => {
-          if (window.console && console.log) {
-            console.log("error")
-            console.log('### adyenCheckout::error:: args=', arguments);
-          }
+          console.log("error")
+          console.log('### adyenCheckout::error:: args=', arguments)
         }
       })
-      return false // Indicates that you want to replace the default handling.
+      return true
     }
   })
 </script>
