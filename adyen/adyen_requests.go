@@ -11,11 +11,43 @@ const (
 	PaymentSessionEndpoint = apiURL + "/paymentSession"
 	// https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v40/payments/result
 	PaymentVerificationEndpoint = apiURL + "/payments/result"
+	// https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v40/payments
+	MakePaymentEndpoint = "https://checkout-test.adyen.com/v40/payments"
 )
+
+type PaymentResultPayload struct {
+	Payload string `form:"payload" json:"payload"`
+}
+
+type RecurringPaymentMethod struct {
+	RecurringDetailReference string `json:"recurringDetailReference"`
+}
 
 type PaymentAmount struct {
 	Currency string `json:"currency"` // "EUR"
 	Value    int    `json:"value"`    // 10 -- 小数点は？
+}
+
+type RecurringPaymentRequest struct {
+	MerchantAccount    string                 `json:"merchantAccount"` // https://ca-test.adyen.com/ca/ca/accounts/show.shtml?accountTypeCode=MerchantAccount
+	Amount             PaymentAmount          `json:"amount"`
+	PaymentMethod      RecurringPaymentMethod `json:"paymentMethod"`
+	Reference          string                 `json:"reference"`          // ペイメントID,
+	ReturnUrl          string                 `json:"returnUrl"`          // http://localhost:8080/return
+	ShopperReference   string                 `json:"shopperReference"`   // ユーザIDなど,
+	ShopperInteraction string                 `json:"shopperInteraction"` // ContAuth
+}
+
+func NewRecurringPaymentRequest(account, recurRef, ref, userRef string, amount PaymentAmount) *RecurringPaymentRequest {
+	return &RecurringPaymentRequest{
+		MerchantAccount:    account,
+		Amount:             amount,
+		PaymentMethod:      RecurringPaymentMethod{recurRef},
+		Reference:          ref,
+		ShopperReference:   userRef,
+		ShopperInteraction: "ContAuth", // ユーザなしの決済（フォームなどを動作していなくて、サーバだけで実行する）
+		ReturnUrl:          "http://localhost:8080/return",
+	}
 }
 
 type PaymentSessionRequest struct {
@@ -50,8 +82,4 @@ func NewPaymentSessionRequest(merchantAccount string) *PaymentSessionRequest {
 		true,
 		true,
 	}
-}
-
-type PaymentResultPayload struct {
-	Payload string `form:"payload" json:"payload"`
 }

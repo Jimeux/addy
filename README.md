@@ -5,24 +5,7 @@
 2. JSで`paymentSession`のデータを取得しSDKの`chckt.checkout`に渡し、フォームを初期化する。
 3. クレジットカードの情報を入れ、サブミットする
 4. 3が成功した場合`recurringDetailReference`がサーバに投げられる
-5. 4の値で`/payments`エンドポイントを叩く ← 現在できない
-
-```json
-curl -H "Content-Type: application/json" -H "X-API-Key: xxx" -X POST -d '{
-	"amount":{
-      "value": 100,
-      "currency": "USD"
-   },
-   "paymentMethod":{
-      "recurringDetailReference": "8315487546018717"
-   },
-   "reference": "randomId123354asdfasdf1548754582",
-   "merchantAccount": "xxx",
-   "returnUrl": "http://localhost:8080/result",
-   "shopperReference": "1234565asdfsadf7891548754582",
-   "shopperInteraction": "ContAuth"
-}' https://checkout-test.adyen.com/v40/payments
-```
+5. 4の値で`/payments`エンドポイントを叩く
 
 ## Let's 実行
 

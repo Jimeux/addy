@@ -13,23 +13,26 @@
 
 <!--paymentSessionの値をここに入れる-->
 <input id="session" type="hidden" value="{{ .session }}"/>
+<div style="max-width: 500px; margin: 90px auto">
+  <div>
+    <strong>Visa</strong><br>
+    4988 4388 4388 4305 <br>
+    10/20 <br>
+    737
+  </div>
+  <br>
+  <div>
+    <strong>3D MasterCard</strong><br>
+    5212 3456 7890 1234<br>
+    10/20 <br>
+    737
+  </div>
+  <br><br>
 
-<div>
-  <strong>Visa</strong><br>
-  4988 4388 4388 4305 <br>
-  10/20 <br>
-  737
+  <!--ペイメントフォームをここに入れる-->
+  <div id="form-container"></div>
+
 </div>
-<br>
-<div>
-  <strong>3D MasterCard</strong><br>
-  5212 3456 7890 1234<br>
-  10/20 <br>
-  737
-</div>
-<br><br>
-<!--ペイメントフォームをここに入れる-->
-<div id="form-container"></div>
 
 <script type="text/javascript">
   const configurationObject = {
