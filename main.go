@@ -50,16 +50,7 @@ func handleRecurringPayment(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, adyen.MakePaymentEndpoint, bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-API-Key", apiKey)
-
-	debugRequest(req)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
+	resp := doPostRequest(adyen.MakePaymentEndpoint, body)
 	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
@@ -83,16 +74,7 @@ func handlePaymentSessionRequest(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, adyen.PaymentSessionEndpoint, bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-API-Key", apiKey)
-
-	debugRequest(req)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
+	resp := doPostRequest(adyen.PaymentSessionEndpoint, body)
 	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
@@ -149,17 +131,8 @@ func verifyReq(payload adyen.PaymentResultPayload) error {
 		log.Fatal(err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, adyen.PaymentVerificationEndpoint, bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-API-Key", apiKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
+	resp := doPostRequest(adyen.PaymentVerificationEndpoint, body)
 	defer resp.Body.Close()
-
-	debugRequest(req)
 
 	decoder := json.NewDecoder(resp.Body)
 	var verifyResp adyen.VerifyPaymentResponse
@@ -175,6 +148,20 @@ func verifyReq(payload adyen.PaymentResultPayload) error {
 	lastVerifyResponse = verifyResp // TODO DBなんかに入れる
 
 	return nil
+}
+
+func doPostRequest(endpoint string, body []byte) *http.Response {
+	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-API-Key", apiKey)
+
+	debugRequest(req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return resp
 }
 
 func debugRequest(req *http.Request) {
