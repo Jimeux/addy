@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -8,11 +8,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript"
           src="https://checkoutshopper-test.adyen.com/checkoutshopper/assets/js/sdk/checkoutSDK.1.6.4.min.js"></script>
+  <title>Addy - Adyen Web SDK Test</title>
 </head>
 <body>
 
-<!--paymentSessionの値をここに入れる-->
-<input id="session" type="hidden" value="{{ .session }}"/>
 <div style="max-width: 500px; margin: 90px auto">
   <div>
     <strong>Visa</strong><br>
@@ -31,19 +30,44 @@
   </div>
   <br><br>
 
+  <!--paymentSessionの値をここに入れる-->
+  <input id="session" type="hidden" value="{{ .session }}"/>
+
   <!--ペイメントフォームをここに入れる-->
   <div id="form-container"></div>
 
 </div>
 
 <script type="text/javascript">
+  // https://docs.adyen.com/developers/checkout/web-sdk/customization/localization#fieldscheckoutfields
+  const translationObject = {
+    "creditCard.numberField.title": {
+      ko_KR: "카드 번호"
+    },
+    "creditCard.expiryDateField.title": {
+      ko_KR: "만료일"
+    },
+    "storeDetails": {
+      ko_KR: "내 다음 구매 할인"
+    },
+    "payButton": {
+      ko_KR: "지불"
+    },
+    "payment.processing": {
+      ko_KR: "결제가 처리 중입니다"
+    },
+    "creditCard.success": {
+      ko_KR: "지불 성"
+    }
+  }
+
   const configurationObject = {
     autoFocusOnLoad: true,
     consolidateCards: true,
     context: 'test',
     initialPMCount: 5, // Overwrites the initial amount of payment methods shown
-    //translations: translationObject,
-    //allowAddedLocales: false, // Allows you to add a locale
+    translations: translationObject,
+    allowAddedLocales: true,
     paymentMethods: {
       card: {
         //sfStyles: securedFieldsStyles,
@@ -58,30 +82,23 @@
 
   $(document).ready(() => {
     const session = $("#session").val()
-    // init
+    // Web SDKをinit（フォームが表示される）
     chckt.checkout(session, '#form-container', configurationObject)
+
     // フォームのサブミットのリクエストが返ってくる時に呼び出される
     chckt.hooks.beforeComplete = (node, paymentData) => {
-      // Object.keys(paymentData) = ["url", "payload", "resultCode", "resultText"]
       console.log(paymentData);
-
-      const payloadObject = {
-        payload: paymentData.payload
-      }
 
       $.ajax({
         url: '/result',
-        data: payloadObject,
+        data: {
+          payload: paymentData.payload
+        },
         method: 'POST',
-        /*success: (data) => { // カスタム対応
-          $("#form-container").html("SUCCESS 🤩👍!!!!!!")
-        },*/
-        error: () => {
-          console.log("error")
-          console.log('### adyenCheckout::error:: args=', arguments)
-        }
+        // success: data => $("#form-container").html("SUCCESS 🤩👍!!!!!!") // カスタム対応
+        error: () => console.log('adyenCheckout::error:: args=', arguments)
       })
-      return true
+      return true // カスタムの場合はfalse
     }
   })
 </script>

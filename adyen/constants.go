@@ -1,13 +1,13 @@
 package adyen
 
 const (
-	webSDKVersion      = "1.6.4"
+	webSDKVersion      = "1.6.5"
 	channelWeb         = "Web"
 	origin             = "http://localhost:8080"
 	initialReturnURL   = "http://localhost:8080/result"
 	recurringReturnURL = "http://localhost:8080/result"
-	countryCode        = "US"
-	shopperLocale      = "en_US"
+	countryCode        = "KR"
+	shopperLocale      = "ko_KR"
 	shopperInteraction = "ContAuth" // ユーザがデバイスを動作していない間に取られる決済
 )
 
