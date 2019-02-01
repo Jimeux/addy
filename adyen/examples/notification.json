@@ -1,0 +1,33 @@
+{
+  "live": "false",
+  "notificationItems": [
+    {
+      "NotificationRequestItem": {
+        "additionalData": {
+          "expiryDate": "10\/2020",
+          "authCode": "2063",
+          "recurring.recurringDetailReference": "8315489052141149",
+          "cardSummary": "4305",
+          "recurring.shopperReference": "1234565asdfsadf7891548905196"
+        },
+        "amount": {
+          "currency": "USD",
+          "value": 1000
+        },
+        "eventCode": "AUTHORISATION",
+        "eventDate": "2019-01-31T04:26:54+01:00",
+        "merchantAccountCode": "EurekaKr",
+        "merchantReference": "randomId123354asdfasdf1548905196",
+        "operations": [
+          "CANCEL",
+          "CAPTURE",
+          "REFUND"
+        ],
+        "paymentMethod": "visa",
+        "pspReference": "8835489052147774",
+        "reason": "2063:4305:10\/2020",
+        "success": "true"
+      }
+    }
+  ]
+}

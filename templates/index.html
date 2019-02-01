@@ -62,7 +62,8 @@
     chckt.checkout(session, '#form-container', configurationObject)
     // フォームのサブミットのリクエストが返ってくる時に呼び出される
     chckt.hooks.beforeComplete = (node, paymentData) => {
-      console.log(paymentData.payload)
+      // Object.keys(paymentData) = ["url", "payload", "resultCode", "resultText"]
+      console.log(paymentData);
 
       const payloadObject = {
         payload: paymentData.payload
@@ -72,7 +73,7 @@
         url: '/result',
         data: payloadObject,
         method: 'POST',
-        /*success: (data) => {
+        /*success: (data) => { // カスタム対応
           $("#form-container").html("SUCCESS 🤩👍!!!!!!")
         },*/
         error: () => {

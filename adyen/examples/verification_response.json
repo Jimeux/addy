@@ -1,0 +1,11 @@
+{
+  "additionalData": {
+    "recurring.recurringDetailReference": "8315489929041159",
+    "recurring.shopperReference": "1234565asdfsadf7891548992881"
+  },
+  "pspReference": "8525489929047194",
+  "resultCode": "Authorised",
+  "merchantReference": "randomId123354asdfasdf1548992881",
+  "paymentMethod": "scheme",
+  "shopperLocale": "en_US"
+}

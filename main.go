@@ -9,6 +9,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/Jimeux/addy/adyen"
 	"github.com/gin-gonic/gin"
@@ -27,8 +28,27 @@ func main() {
 	router.POST("/result", handleVerifyPaymentResult)
 	router.GET("/result", handlePaymentResultRedirect)
 	router.GET("/payment", handleRecurringPayment)
+	router.POST("/notify", handleNotification)
 
 	router.Run()
+}
+
+func handleNotification(c *gin.Context) {
+	debugRequest(c.Request)
+
+	var notifications adyen.NotificationRequest
+	if err := c.Bind(&notifications); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(notifications)
+
+	for _, n := range notifications.NotificationItems {
+		fmt.Printf("notification for PSPref %s", n.PSPReference)
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.Header("Accept", "application/json")
+	c.String(http.StatusOK, adyen.NotificationResponse)
 }
 
 var lastVerifyResponse adyen.VerifyPaymentResponse
@@ -68,7 +88,11 @@ func handleRecurringPayment(c *gin.Context) {
 }
 
 func handlePaymentSessionRequest(c *gin.Context) {
-	payment := adyen.NewPaymentSessionRequest(merchantAccount)
+	amount := adyen.PaymentAmount{"USD", 1000}
+	ref := fmt.Sprintf("randomId123354asdfasdf%d", time.Now().Unix())
+	userRef := fmt.Sprintf("1234565asdfsadf789%d", time.Now().Unix())
+
+	payment := adyen.NewPaymentSessionRequest(amount, ref, userRef, merchantAccount)
 	body, err := json.Marshal(payment)
 	if err != nil {
 		log.Fatal(err)
@@ -95,7 +119,7 @@ func handlePaymentSessionRequest(c *gin.Context) {
 }
 
 func handlePaymentResultRedirect(c *gin.Context) {
-	var query adyen.PayloadQueryString
+	var query adyen.PaymentResultParams
 	if err := c.BindQuery(&query); err != nil {
 		log.Fatal(err)
 	}
