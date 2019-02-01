@@ -4,7 +4,7 @@ package adyen
 // https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v40/paymentSession
 type PaymentSessionRequest struct {
 	MerchantAccount  string        `json:"merchantAccount"` // /ca/ca/accounts/show.shtml?accountTypeCode=MerchantAccount
-	SDKVersion       string        `json:"sdkVersion"`      // 1.6.4
+	SDKVersion       string        `json:"sdkVersion"`      // 1.6.5
 	Channel          string        `json:"channel"`         // プラットフォーム：Web / iOS / Android
 	Amount           PaymentAmount `json:"amount"`
 	Reference        string        `json:"reference"`        // ペイメントID,

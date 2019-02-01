@@ -9,6 +9,12 @@
   <script type="text/javascript"
           src="https://checkoutshopper-test.adyen.com/checkoutshopper/assets/js/sdk/checkoutSDK.1.6.4.min.js"></script>
   <title>Addy - Adyen Web SDK Test</title>
+  <style type="text/css">
+    /* 「Save for my next payment」チェックボックスを隠す */
+    label.chckt-form-label--full-width:last-child {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -86,6 +92,7 @@
     chckt.checkout(session, '#form-container', configurationObject)
 
     // フォームのサブミットのリクエストが返ってくる時に呼び出される
+    // フック一覧： https://docs.adyen.com/developers/checkout/web-sdk/customization/logic
     chckt.hooks.beforeComplete = (node, paymentData) => {
       console.log(paymentData);
 
