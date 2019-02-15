@@ -14,21 +14,21 @@ type PaymentResultPayload struct {
 
 type PaymentAmount struct {
 	Currency string `json:"currency"` // "USD"
-	Value    int    `json:"value"`    // 100 -- セント単位（小数点はない）
+	Value    int64  `json:"value"`    // 100 -- セント単位（小数点はない）
 }
 
 // SDKのPayloadを検証（verify）するエンドポイントのレスポンス
 // https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/payments/result
 type VerifyPaymentResponse struct {
-	AdditionalData    AdditionalData `json:"additionalData"`
-	PSPReference      string         `json:"pspReference"`
-	ResultCode        string         `json:"resultCode"`
-	MerchantReference string         `json:"merchantReference"`
-	PaymentMethod     string         `json:"paymentMethod"`
-	ShopperLocale     string         `json:"shopperLocale"`
+	AdditionalData    AdditionalRequestData `json:"additionalData"`
+	PSPReference      string                `json:"pspReference"`
+	ResultCode        string                `json:"resultCode"`
+	MerchantReference string                `json:"merchantReference"`
+	PaymentMethod     string                `json:"paymentMethod"`
+	ShopperLocale     string                `json:"shopperLocale"`
 }
 
-type AdditionalData struct {
+type AdditionalRequestData struct {
 	RecurringDetailReference string `json:"recurring.recurringDetailReference"`
 	ShopperReference         string `json:"recurring.shopperReference"`
 }
@@ -59,4 +59,15 @@ func NewRecurringPaymentRequest(account, recurRef, ref, userRef string, amount P
 		ShopperInteraction: shopperInteraction,
 		ReturnURL:          recurringReturnURL,
 	}
+}
+
+type RecurringPaymentResponse struct {
+	AdditionalData AdditionalResponseData `json:"additionalData"`
+	PSPReference   string                 `json:"pspReference"`
+	ResultCode     string                 `json:"resultCode"`
+}
+
+type AdditionalResponseData struct {
+	FirstPSPReference        string `json:" recurring.firstPspReference"`
+	RecurringDetailReference string `json:"recurringDetailReference"`
 }

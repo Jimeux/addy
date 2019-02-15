@@ -1,10 +1,14 @@
 package adyen
 
+type SessionResponse struct {
+	PaymentSession string `json:"paymentSession"`
+}
+
 // SDKの初期化に必要なデータを返却するリクエスト
 // https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v40/paymentSession
-type PaymentSessionRequest struct {
+type SessionRequest struct {
 	MerchantAccount  string        `json:"merchantAccount"` // /ca/ca/accounts/show.shtml?accountTypeCode=MerchantAccount
-	SDKVersion       string        `json:"sdkVersion"`      // 1.6.5
+	SDKVersion       string        `json:"sdkVersion"`      // 1.6.4
 	Channel          string        `json:"channel"`         // プラットフォーム：Web / iOS / Android
 	Amount           PaymentAmount `json:"amount"`
 	Reference        string        `json:"reference"`        // ペイメントID,
@@ -17,9 +21,9 @@ type PaymentSessionRequest struct {
 	EnableOneClick   bool          `json:"enableOneClick"`
 }
 
-func NewPaymentSessionRequest(amount PaymentAmount, ref, shopperRef, merchantAccount string) *PaymentSessionRequest {
-	return &PaymentSessionRequest{
-		MerchantAccount:  merchantAccount,
+func NewPaymentSessionRequest(amount PaymentAmount, account, ref, shopperRef, origin, returnURL string) *SessionRequest {
+	return &SessionRequest{
+		MerchantAccount:  account,
 		SDKVersion:       webSDKVersion,
 		Channel:          channelWeb,
 		Amount:           amount,
@@ -28,7 +32,7 @@ func NewPaymentSessionRequest(amount PaymentAmount, ref, shopperRef, merchantAcc
 		ShopperLocale:    shopperLocale,
 		ShopperReference: shopperRef,
 		Origin:           origin,
-		ReturnURL:        initialReturnURL,
+		ReturnURL:        returnURL,
 		EnableRecurring:  true,
 		EnableOneClick:   true,
 	}
